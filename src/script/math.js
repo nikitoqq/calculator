@@ -19,7 +19,6 @@ const Operation = (value) => {
 };
 
 const Plus = (first, second) => {
-
   return first + second;
 };
 
