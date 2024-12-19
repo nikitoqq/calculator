@@ -1,6 +1,7 @@
 import Button from "./Button";
 import styled from "styled-components";
-import Calc from "../../../script/math";
+import { Reg, Equal } from "../../../script/math";
+import { useState } from "react";
 
 const BtnAriaStyle = styled.button`
   width: 100px;
@@ -10,19 +11,31 @@ const BtnAriaStyle = styled.button`
   border: 1px solid black;
 `;
 
-const ButtonAria = ({ onClick }) => {
+const ButtonAria = ({setHistory, onClick, value }) => {
+  const [calcValue, setCalcValue] = useState("");
+
   const btnClickNum = (e) => {
-    onClick((value) => value + e.target.innerText);
+    const text = e.target.innerText;
+    onClick(value + text);
+    setCalcValue(calcValue + text);
   };
 
   const btnClick = (e) => {
-    onClick((value) =>
-      isNaN(value[value.length - 1]) ? value : value + e.target.innerText
-    );
+    const text = e.target.innerText;
+    if (!isNaN(value[value.length - 1])) {
+      onClick(value + text);
+      setCalcValue(calcValue + Reg(text));
+    }
   };
 
+  const refresh = () => {
+    onClick('');
+    setCalcValue('');
+  }
+
   const equal = () => {
-    onClick((value) => Calc(value))
+    onClick(Equal(calcValue))
+    setCalcValue(Equal(calcValue))
   };
 
   return (
@@ -35,7 +48,7 @@ const ButtonAria = ({ onClick }) => {
         <Button Btn={BtnAriaStyle} onClick={btnClick} name={"-"} />
         <Button
           Btn={BtnAriaStyle}
-          onClick={() => onClick((value) => value.slice(0, -1))}
+          onClick={() => onClick(value.slice(0, -1))}
           name={"<="}
         />
       </div>
@@ -58,7 +71,7 @@ const ButtonAria = ({ onClick }) => {
       <div>
         <Button
           Btn={BtnAriaStyle}
-          onClick={() => onClick((value) => (value = ""))}
+          onClick={refresh}
           name={"Удалить"}
         />
         <Button Btn={BtnAriaStyle} onClick={btnClickNum} name={0} />

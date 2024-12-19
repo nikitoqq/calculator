@@ -23,16 +23,16 @@ const App = {
 };
 
 function Calculator() {
-  const history = ["Попа", "История"];
+  const [history, setHistory] = useState['']
   const [value, setValue] = useState('');
   return (
     <App.Wrapper>
       <App.Calc>
         <Display text={value}/>
-        <ButtonAria value={value} onClick={setValue}/>
+        <ButtonAria setHistory={setHistory} value={value} onClick={setValue}/>
       </App.Calc>
       <App.History>
-        <Memory history={history} />
+        <Memory history={history}/>
       </App.History>
     </App.Wrapper>
   );
