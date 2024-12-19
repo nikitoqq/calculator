@@ -36,6 +36,7 @@ const ButtonAria = ({setHistory, onClick, value }) => {
   const equal = () => {
     onClick(Equal(calcValue))
     setCalcValue(Equal(calcValue))
+    setHistory(history=> history.push(value))
   };
 
   return (
