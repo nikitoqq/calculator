@@ -23,7 +23,7 @@ const App = {
 };
 
 function Calculator() {
-  const [history, setHistory] = useState['']
+  const [history, setHistory] = useState([]);
   const [value, setValue] = useState('');
   return (
     <App.Wrapper>
