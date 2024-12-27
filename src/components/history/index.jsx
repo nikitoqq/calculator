@@ -6,8 +6,15 @@ import {
   SideRight,
 } from "./historyStyle";
 
-const History = ({ history }) => {
-  const mapingHistory = history.map((elem) => <StyledLi>{elem}</StyledLi>);
+const History = ({ history, setValue }) => {
+  const getHistory = (key) => {
+    history.map((elem, index) => key === index ? setValue(elem) : null);
+  };
+  const mapingHistory = history.map((elem, index) => (
+    <StyledLi onClick={() => getHistory(index)} key={index}>
+      {elem}
+    </StyledLi>
+  ));
   return (
     <SideRight>
       <StyledHistory>
