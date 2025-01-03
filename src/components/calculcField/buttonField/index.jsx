@@ -1,4 +1,4 @@
-import { answer } from "../../../scripts/scripts";
+import { answer } from "../../../utils/math.";
 import { Column, Field } from "./btnFieldStyle";
 import Button from "./button";
 
