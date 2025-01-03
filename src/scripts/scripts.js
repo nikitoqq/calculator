@@ -1,63 +1,71 @@
 export const answer = (value) => {
   while (true) {
+    let indexMinus = value.indexOf("-");
+    let newValue = value;
+    if (value.indexOf("-") === 0) {
+      indexMinus = value.slice(1, value.length + 1).indexOf("-");
+      newValue = value.slice(1, value.length + 1);
+    }
     if (value.includes("(")) {
       value = checkBrackets(value);
-    } else if (checkOperation(value) || checkMinus(value, value.indexOf("-"))) {
-      value = loop(value, findIndex(value));
+    } else if (checkOperation(newValue) || checkMinus(newValue, indexMinus)) {
+      value = loop(newValue);
     } else {
       break;
     }
   }
+
   return value;
 };
 
-const loop = (value, index) => {
+const loop = (value) => {
   if (value.includes("^")) {
     value = operation(value, "^");
   } else if (value.includes("√")) {
     value = operation(value, "√");
   } else if (
     value.includes("*") &&
-    index.signMulty < (index.signDivision === -1 ? 1000 : index.signDivision)
+    value.indexOf("*") < (value.indexOf("/") === -1 ? 1000 : value.indexOf("/"))
   ) {
     value = operation(value, "*");
   } else if (
     value.includes("/") &&
-    index.signDivision < (index.signMulty === -1 ? 1000 : index.signMulty)
+    value.indexOf("/") < (value.indexOf("*") === -1 ? 1000 : value.indexOf("*"))
   ) {
     value = operation(value, "/");
   } else if (
-    (checkMinus(value, index.signMinus) ||
-      checkMinus(value, index.signMinus)) &&
-    (index.signPlus === -1 ? 1000 : index.signPlus)
+    (checkMinus(value, value.indexOf("-")) ||
+      checkMinus(value, value.indexOf("-"))) &&
+    (value.indexOf("+") === -1 ? 1000 : value.indexOf("+"))
   ) {
-    value = operationMinus(value, index.signMinus);
+    value = operationMinus(value, value.indexOf("-"));
   } else if (
     value.includes("+") &&
-    index.signPlus >
-      (index.signMinus === -1 && index.signMinus === 0 ? 1000 : index.signMinus)
+    value.indexOf("+") >
+      (value.indexOf("-") === -1 && value.indexOf("-") === 0
+        ? 1000
+        : value.indexOf("-"))
   ) {
     value = operation(value, "+");
   }
+
   return value;
 };
 
 const checkBrackets = (value) => {
-  const [from, to] = findBrackets(value, "(");
+  const [from, to] = distanceBrackets(value, "(");
   let bracketsValue = value.slice(from, to);
-
   while (true) {
-    if (checkOperation(value)) {
+    if (checkOperation(bracketsValue)) {
       bracketsValue = loop(bracketsValue);
     } else {
       break;
     }
   }
-
   return value.slice(0, from - 1) + bracketsValue + value.slice(to + 1);
 };
 
-const findBrackets = (value) => {
+const distanceBrackets = (value) => {
   const from = value.indexOf("(");
 
   const to = (value, index) => {
@@ -74,11 +82,8 @@ const findBrackets = (value) => {
 
 const operationMinus = (value, index) => {
   const sliceValue = distanceForMinus(value, index);
-  const [leftValue, rightValue] = [
-    value.slice(sliceValue[0], index),
-    value.slice(index + 1, sliceValue[1]),
-  ];
-
+  const leftValue = value.slice(sliceValue[0], index);
+  const rightValue = value.slice(index + 1, sliceValue[1]);
   return newValue(value, sliceValue, minus(leftValue, rightValue));
 };
 
@@ -91,23 +96,18 @@ const operation = (value, sign) => {
   ];
 
   if (sign === "√") {
-    console.log(`l ${leftValue}, r ${rightValue}`);
     return newValue(value, sliceValue, sqrt(leftValue, rightValue));
   }
   if (sign === "^") {
-    console.log(`l ${leftValue}, r ${rightValue}`);
     return newValue(value, sliceValue, pow(leftValue, rightValue));
   }
   if (sign === "*") {
-    console.log(`l ${leftValue}, r ${rightValue}`);
     return newValue(value, sliceValue, multiply(leftValue, rightValue));
   }
   if (sign === "/") {
-    console.log(`l ${leftValue}, r ${rightValue}`);
     return newValue(value, sliceValue, division(leftValue, rightValue));
   }
   if (sign === "+") {
-    console.log(`l ${leftValue}, r ${rightValue}`);
     return newValue(value, sliceValue, plus(leftValue, rightValue));
   }
 };
@@ -146,7 +146,7 @@ const distanceForMinus = (value, index) => {
     while (true) {
       if (isNaN(value[index])) {
         if (value[index] !== ".") {
-          return index + 1;
+          return index - 1;
         }
       }
       index--;
@@ -163,18 +163,7 @@ const distanceForMinus = (value, index) => {
       index++;
     }
   };
-  return [from(value, index - 1), to(value, index + 1)];
-};
-
-const findIndex = (value) => {
-  return {
-    signPlus: value.indexOf("+"),
-    signMinus: value.indexOf("-"),
-    signDivision: value.indexOf("/"),
-    signMulty: value.indexOf("*"),
-    signSqrt: value.indexOf("√"),
-    signPow: value.indexOf("^"),
-  };
+  return [from(value, index), to(value, index + 1)];
 };
 
 const checkOperation = (value) =>
