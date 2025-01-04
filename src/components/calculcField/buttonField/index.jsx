@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { answer } from "../../../utils/math.";
 import { Column, Field } from "./btnFieldStyle";
 import Button from "./button";
@@ -51,7 +52,7 @@ const ButtonField = ({ setValue, setHistory, value }) => {
       </Column>
       <Column>
         <Button onClick={(e) => addSymble(e)} name={"0"} />
-        <Button onClick={(e) => addSymble(e)} name={","} />
+        <Button onClick={(e) => addSymble(e)} name={"."} />
         <Button onClick={delSymble} name={"C"} />
         <Button onClick={delAllSymble} name={"AC"} />
         <Button onClick={equal} name={"="} />
