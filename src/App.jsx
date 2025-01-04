@@ -1,6 +1,6 @@
-import History from "./components/history";
+import History from "./Components/History"
 import { Wrapper } from "./appStyle";
-import CalcField from "./components/calculcField";
+import CalcField from "./Components/CalculcField";
 import { useState } from "react";
 
 const App = () => {

@@ -1,9 +1,9 @@
-import { StyledInp } from "./displayStyle";
+import { StyledInput } from "./style";
 
 const Display = ({ value }) => {
   return (
     <>
-      <StyledInp readOnly={true} type="text" value={value} />
+      <StyledInput readOnly={true} type="text" value={value} />
     </>
   );
 };

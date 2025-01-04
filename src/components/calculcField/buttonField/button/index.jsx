@@ -1,8 +1,8 @@
-import { StyledBtn } from "./btnStyle"
+import { StyledButton } from "./style"
 
 const Button = ({onClick, value, name,style}) => {
     return(
-        <StyledBtn style={style} onClick={onClick} value={value}>{name}</StyledBtn>
+        <StyledButton style={style} onClick={onClick} value={value}>{name}</StyledButton>
     )
 }
 

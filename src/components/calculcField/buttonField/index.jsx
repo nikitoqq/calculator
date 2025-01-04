@@ -1,7 +1,6 @@
-import { useEffect } from "react";
 import { answer } from "../../../utils/math.";
-import { Column, Field } from "./btnFieldStyle";
-import Button from "./button";
+import { Column, Field } from "./style";
+import Button from "./Button";
 
 const ButtonField = ({ setValue, setHistory, value }) => {
   const addSymble = (e) => {
