@@ -4,11 +4,11 @@ export const StyledHistory = styled.aside`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 300px;
+  width: 200%;
   height: 100%;
   border: 1px solid black;
   border-radius: 15px;
-  margin: 10px 0px 10px 20px;
+  margin: 10px 0px 10px 0px;
 `;
 
 export const StyledH1 = styled.h1`
