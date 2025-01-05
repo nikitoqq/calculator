@@ -4,11 +4,11 @@ import {
   StyledLi,
   StyledH1,
   SideRight,
-} from "./historyStyle";
+} from "./style";
 
 const History = ({ history, setValue }) => {
   const getHistory = (key) => {
-    history.map((elem, index) => key === index ? setValue(elem) : null);
+    history.map((elem, index) => (key === index ? setValue(elem) : null));
   };
   const mapingHistory = history.map((elem, index) => (
     <StyledLi onClick={() => getHistory(index)} key={index}>

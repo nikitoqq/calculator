@@ -1,13 +1,12 @@
-import { SideLeft } from "./calcFieldStyle";
-import Display from "./display";
-import ButtonField from "./buttonField";
+import { SideLeft } from "./style";
+import Display from "./Display";
+import ButtonField from "./ButtonField";
 
-const CalcField = ({setHistory, value, setValue}) => {
-
+const CalcField = ({history, setHistory, value, setValue }) => {
   return (
     <SideLeft>
       <Display value={value} />
-      <ButtonField value={value} setHistory={setHistory} setValue={setValue} />
+      <ButtonField history={history} value={value} setHistory={setHistory} setValue={setValue} />
     </SideLeft>
   );
 };

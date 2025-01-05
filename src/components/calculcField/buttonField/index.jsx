@@ -1,8 +1,8 @@
-import { answer } from "../../../scripts/scripts";
-import { Column, Field } from "./btnFieldStyle";
-import Button from "./button";
+import { answer } from "../../../utils/math.";
+import { Column, Field } from "./style";
+import Button from "./Button";
 
-const ButtonField = ({ setValue, setHistory, value }) => {
+const ButtonField = ({history, setValue, setHistory, value }) => {
   const addSymble = (e) => {
     setValue((value) => value + e.target.innerText);
   };
@@ -16,6 +16,9 @@ const ButtonField = ({ setValue, setHistory, value }) => {
     setHistory((history) =>
       history.length > 9 ? [...history.slice(1), value] : [...history, value]
     );
+    history.forEach((item, index) => {
+      localStorage.setItem(index, item)
+    })
   };
 
   const delSymble = () => {
@@ -51,7 +54,7 @@ const ButtonField = ({ setValue, setHistory, value }) => {
       </Column>
       <Column>
         <Button onClick={(e) => addSymble(e)} name={"0"} />
-        <Button onClick={(e) => addSymble(e)} name={","} />
+        <Button onClick={(e) => addSymble(e)} name={"."} />
         <Button onClick={delSymble} name={"C"} />
         <Button onClick={delAllSymble} name={"AC"} />
         <Button onClick={equal} name={"="} />
