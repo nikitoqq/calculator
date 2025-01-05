@@ -1,39 +1,31 @@
+import { PATTERN_FIND_EMPTY_BRACKETS, reg } from "./constants";
+
 export const answer = (value) => {
   try {
-    while (true) {
+    while (value.match(/-?[.0-9]+[+\-*/√^]-?[.0-9]+/)) {
       const isValue = value.match(/-?[.0-9]+[+\-*/√^]-?[.0-9]+/);
       if (value.includes("(")) {
         const [pattern, replacement] = findBrackets(value);
         value = value.replace(pattern, replacement);
       } else if (isValue !== null) {
         value = loopOperation(value);
-      } else {
-        break;
       }
     }
 
     return value;
   } catch (error) {
-    return (value = error.name);
+    return error;
   }
 };
 const findBrackets = (value) => {
-  const pattern = /\([^()]*\)/;
-  const replacement = loopOperation(value.match(pattern)[0].slice(1, -1));
-  return [pattern, replacement];
+  const replacement = loopOperation(
+    value.match(PATTERN_FIND_EMPTY_BRACKETS)[0].slice(1, -1)
+  );
+  return [PATTERN_FIND_EMPTY_BRACKETS, replacement];
 };
 
 const loopOperation = (value) => {
-  const reg = {
-    plus: /-?[.0-9]+[+]-?[.0-9]+/,
-    multiply: /-?[.0-9]+[*]-?[.0-9]+/,
-    devision: /-?[.0-9]+[/]-?[.0-9]+/,
-    root: /-?[.0-9]+[√]-?[.0-9]+/,
-    pow: /-?[.0-9]+[\^]-?[.0-9]+/,
-    minus: /-?[.0-9]+[-]-?[.0-9]+/,
-  };
-
-  while (true) {
+  while (value.match(/-?[.0-9]+[+\-*/√^]-?[.0-9]+/)) {
     const isMultiply =
       value.includes("*") &&
       value.indexOf("*") <
@@ -54,8 +46,6 @@ const loopOperation = (value) => {
       value = calc(value, value.match(reg.minus), minus);
     } else if (value.includes("+") && !reg.minus.test(value)) {
       value = calc(value, value.match(reg.plus), plus);
-    } else {
-      break;
     }
   }
   return value;
