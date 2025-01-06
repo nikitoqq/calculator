@@ -1,22 +1,27 @@
-import { PATTERN_FIND_EMPTY_BRACKETS, reg } from "./constants";
+const REG_WHILE = /([.\d]|\(-[.\d]\))+[+\-*/√^]([.\d]|\(-[.\d]\))+/;
+const PATTERN_FIND_EMPTY_BRACKETS = /\([^(^\-)]*\)/;
+const REG = {
+  plus: /([.0-9]+|\([-.0-9]+\))[+]([.0-9]+|\([-.0-9]+\))?/,
+  multiply: /([.0-9]+|\([-.0-9]+\))[*]([.0-9]+|\([-.0-9]+\))/,
+  devision: /([.0-9]+|\([-.0-9]+\))[/]([.0-9]+|\([-.0-9]+\))/,
+  root: /([.0-9]+|\([-.0-9]+\))[√]([.0-9]+|\([-.0-9]+\))/,
+  pow: /([.0-9]+|\([-.0-9]+\))[\^]([.0-9]+|\([-.0-9]+\))/,
+  minus: /([.0-9]+|\([-.0-9]+\))[-]([.0-9]+|\([-.0-9]+\))?/,
+};
 
 export const answer = (value) => {
-  try {
-    while (value.match(/-?[.0-9]+[+\-*/√^]-?[.0-9]+/)) {
-      const isValue = value.match(/-?[.0-9]+[+\-*/√^]-?[.0-9]+/);
-      if (value.includes("(")) {
-        const [pattern, replacement] = findBrackets(value);
-        value = value.replace(pattern, replacement);
-      } else if (isValue !== null) {
-        value = loopOperation(value);
-      }
+  while (value.match(REG_WHILE)) {
+    if (PATTERN_FIND_EMPTY_BRACKETS.test(value)) {
+      const [pattern, replacement] = findBrackets(value);
+      value = value.replace(pattern, replacement);
+    } else {
+      value = loopOperation(value);
     }
-
-    return value;
-  } catch (error) {
-    return error;
   }
+
+  return value;
 };
+
 const findBrackets = (value) => {
   const replacement = loopOperation(
     value.match(PATTERN_FIND_EMPTY_BRACKETS)[0].slice(1, -1)
@@ -25,49 +30,60 @@ const findBrackets = (value) => {
 };
 
 const loopOperation = (value) => {
-  while (value.match(/-?[.0-9]+[+\-*/√^]-?[.0-9]+/)) {
-    const isMultiply =
-      value.includes("*") &&
-      value.indexOf("*") <
-        (value.indexOf("/") === -1 ? 100 : value.indexOf("/"));
-    const isDevision =
-      value.includes("/") &&
-      value.indexOf("/") <
-        (value.indexOf("*") === -1 ? 100 : value.indexOf("*"));
-    if (value.includes("√")) {
-      value = calc(value, value.match(reg.root), root);
-    } else if (value.includes("^")) {
-      value = calc(value, value.match(reg.pow), pow);
-    } else if (isMultiply) {
-      value = calc(value, value.match(reg.multiply), multiply);
-    } else if (isDevision) {
-      value = calc(value, value.match(reg.devision), devision);
-    } else if (reg.minus.test(value)) {
-      value = calc(value, value.match(reg.minus), minus);
-    } else if (value.includes("+") && !reg.minus.test(value)) {
-      value = calc(value, value.match(reg.plus), plus);
+  while (value.match(REG_WHILE)) {
+    console.log(value);
+    if (operationPriority(value, "√", "^")) {
+      value = calc(value, value.match(REG.root), root);
+    } else if (operationPriority(value, "^", "√")) {
+      value = calc(value, value.match(REG.pow), pow);
+    } else if (operationPriority(value, "*", "/")) {
+      value = calc(value, value.match(REG.multiply), multiply);
+    } else if (operationPriority(value, "/", "*")) {
+      value = calc(value, value.match(REG.devision), devision);
+    } else if (operationPriority(value, "-", "+")) {
+      value = calc(value, value.match(REG.minus), minus);
+    } else if (value.includes("+")) {
+      value = calc(value, value.match(REG.plus), plus);
     }
   }
   return value;
 };
 
-const calc = (value, reg, operation) => {
-  reg.forEach((item, index) => {
-    const operands = item.match(/-?[.0-9]+/g);
-    if (index === 0) {
-      if (/--\d/.test(item)) {
-        value = value.replace(item, doubleMinus(+operands[0], +operands[1]));
-      } else {
-        value = value.replace(item, operation(+operands[0], +operands[1]));
-      }
+const operationPriority = (value, operation, antogonistOperation) => {
+  return (
+    value.includes(`${operation}`) &&
+    value.indexOf(`${operation}`) <
+      (value.indexOf(`${antogonistOperation}`) === -1
+        ? 100
+        : value.indexOf(`${antogonistOperation}`))
+  );
+};
+
+const calc = (value, operands, operation) => {
+  console.log(operands);
+  operands = calcOperandsReg(operands);
+  console.log(operands);
+  console.log(operation);
+  return value.replace(
+    operands[0],
+    calcResultReg(operation(Number(operands[1]), Number(operands[2])))
+  );
+};
+
+const calcResultReg = (result) => (/^-/.test(result) ? `(${result})` : result);
+
+const calcOperandsReg = (operands) => {
+  console.log(operands);
+  return operands.map((operand, index) => {
+    if (index !== 0) {
+      return operand.includes("-") ? operand.match(/-\d?\.\d/) : operand;
     }
+    return operand;
   });
-  return value;
 };
 
 const plus = (a, b) => a + b;
-const minus = (a, b) => a + b;
-const doubleMinus = (a, b) => a - b;
+const minus = (a, b) => a - b;
 const multiply = (a, b) => a * b;
 const devision = (a, b) => a / b;
 const root = (a, b) => Math.pow(b, 1 / a);

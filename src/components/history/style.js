@@ -15,9 +15,9 @@ export const StyledLi = styled.li`
 export const SideRight = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   max-width: 200px;
   border: 1px solid black;
   border-radius: 15px;
   margin: 5px 0px 5px 10px;
+  padding: 20px;
 `;
