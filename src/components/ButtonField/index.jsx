@@ -1,8 +1,32 @@
 import { Button } from "../Button";
 
 import { answer } from "../../utils/math";
-import { BUTTON_NAME } from "../../utils/constants";
 import { Field } from "./style";
+
+const BUTTON_NAME = [
+  1,
+  2,
+  3,
+  "+",
+  "-",
+  4,
+  5,
+  6,
+  "/",
+  "*",
+  7,
+  8,
+  9,
+  "√",
+  "^",
+  0,
+  ".",
+  "C",
+  "AC",
+  "=",
+  "(",
+  ")",
+];
 
 export const ButtonField = ({ history, setValue, setHistory, value }) => {
   const handleClick = (e) => {
@@ -12,7 +36,7 @@ export const ButtonField = ({ history, setValue, setHistory, value }) => {
       setValue(answer(value));
 
       setHistory(
-        history.length > 9 ? [...history.slice(1), value] : [...history, value]
+        history.length > 10 ? [...history.slice(1), value] : [...history, value]
       );
     } else if (/AC/.test(e.target.value)) {
       setValue("");
