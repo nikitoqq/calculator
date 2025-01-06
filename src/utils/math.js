@@ -76,7 +76,7 @@ const calcOperandsReg = (operands) => {
   console.log(operands);
   return operands.map((operand, index) => {
     if (index !== 0) {
-      return operand.includes("-") ? operand.match(/-\d?\.?\d/) : operand;
+      return operand.includes("-") ? operand.match(/-\d?\.\d/) : operand;
     }
     return operand;
   });
