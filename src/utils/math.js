@@ -1,5 +1,5 @@
 const REG_WHILE = /([.\d]|\(-[.\d]\))+[+\-*/√^]([.\d]|\(-[.\d]\))+/;
-const PATTERN_FIND_EMPTY_BRACKETS = /\([^(^\-)]*\)/;
+const PATTERN_FIND_EMPTY_BRACKETS = /\([^(-)]*\)/;
 const REG = {
   plus: /([.0-9]+|\([-.0-9]+\))[+]([.0-9]+|\([-.0-9]+\))?/,
   multiply: /([.0-9]+|\([-.0-9]+\))[*]([.0-9]+|\([-.0-9]+\))/,
@@ -18,8 +18,7 @@ export const answer = (value) => {
       value = loopOperation(value);
     }
   }
-
-  return value;
+  return value.match(/(\([-\d]\.?[0-9][1-9]?\)|\d\.?[0-9][1-9]?)/g);
 };
 
 const findBrackets = (value) => {
@@ -31,7 +30,6 @@ const findBrackets = (value) => {
 
 const loopOperation = (value) => {
   while (value.match(REG_WHILE)) {
-    console.log(value);
     if (operationPriority(value, "√", "^")) {
       value = calc(value, value.match(REG.root), root);
     } else if (operationPriority(value, "^", "√")) {
@@ -60,10 +58,7 @@ const operationPriority = (value, operation, antogonistOperation) => {
 };
 
 const calc = (value, operands, operation) => {
-  console.log(operands);
   operands = calcOperandsReg(operands);
-  console.log(operands);
-  console.log(operation);
   return value.replace(
     operands[0],
     calcResultReg(operation(Number(operands[1]), Number(operands[2])))
@@ -73,7 +68,6 @@ const calc = (value, operands, operation) => {
 const calcResultReg = (result) => (/^-/.test(result) ? `(${result})` : result);
 
 const calcOperandsReg = (operands) => {
-  console.log(operands);
   return operands.map((operand, index) => {
     if (index !== 0) {
       return operand.includes("-") ? operand.match(/-\d?\.?\d/) : operand;
@@ -82,9 +76,9 @@ const calcOperandsReg = (operands) => {
   });
 };
 
-const plus = (a, b) => a + b;
-const minus = (a, b) => a - b;
-const multiply = (a, b) => a * b;
-const devision = (a, b) => a / b;
-const root = (a, b) => Math.pow(b, 1 / a);
-const pow = (a, b) => Math.pow(a, b);
+const plus = (a, b) => (a + b).toFixed(2);
+const minus = (a, b) => (a - b).toFixed(2);
+const multiply = (a, b) => (a * b).toFixed(2);
+const devision = (a, b) => (a / b).toFixed(2);
+const root = (a, b) => Math.pow(b, 1 / a).toFixed(2);
+const pow = (a, b) => Math.pow(a, b).toFixed(2);
