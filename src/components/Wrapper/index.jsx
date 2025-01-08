@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { CalcField } from "../CalcField";
 import { History } from "../History";
 
-import { getStorage, setStorage } from "../../utils/storage";
+import { getStorage} from "../../utils/storage";
 import { StyledWrapper } from "./style";
 
 export const Wrapper = () => {
@@ -11,11 +11,15 @@ export const Wrapper = () => {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    getStorage(setHistory);
+    getStorage().forEach((item) => {
+      setHistory((history) =>
+        history.length > 9 ? [...history.slice(1), item] : [...history, item]
+      );
+    });
   }, []);
 
   useEffect(() => {
-    setStorage(history);
+    localStorage.setItem("history", history);
   }, [history]);
 
   return (

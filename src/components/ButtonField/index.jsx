@@ -1,8 +1,8 @@
 import { Button } from "../Button";
 
 import { answer } from "../../utils/math";
-import { Field } from "./style";
 import { regSetValue, regEqualeValue } from "../../utils/regInput";
+import { Field } from "./style";
 
 const BUTTON_NAME = [
   1,
@@ -31,15 +31,28 @@ const BUTTON_NAME = [
 
 export const ButtonField = ({ history, setValue, setHistory, value }) => {
   const handleClick = (e) => {
-    const buttonValue = e.target.value;
-
-    if (/[\d+-/*√.^()]/.test(buttonValue)) {
-      regSetValue(setValue, value, buttonValue);
-    } else if (/=/.test(buttonValue)) {
-      regEqualeValue(value, setValue, answer, setHistory, history);
-    } else if (/AC/.test(buttonValue)) {
+    if (/[\d+-/*√.^()]/.test(e.target.value)) {
+      const buttonValue = regSetValue(value, e.target.value);
+      setValue(value + buttonValue);
+    } else if (/=/.test(e.target.value)) {
+      if (regEqualeValue(value)) {
+        setValue(answer(value));
+        setHistory(
+          history.length > 10
+            ? [...history.slice(1), value]
+            : [...history, value]
+        );
+      } else {
+        setValue("error");
+        setHistory(
+          history.length > 10
+            ? [...history.slice(1), "error"]
+            : [...history, "error"]
+        );
+      }
+    } else if (/AC/.test(e.target.value)) {
       setValue("");
-    } else if (/C/.test(buttonValue)) {
+    } else if (/C/.test(e.target.value)) {
       setValue((value) => value.slice(0, -1));
     }
   };
