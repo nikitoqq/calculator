@@ -1,27 +1,46 @@
-export const regSetValue = (func, value, buttonValue) => {
-  if (value === "") {
-    if (/[+-/*√.^)]/.test(buttonValue)) {
-      buttonValue = "";
-    }
+export const regSetValue = (value, buttonValue) => {
+  const regReturnEmtyValueArr = [
+    [/^$/, /[+/*√.^)]/],
+    [/\d+\.\d+$/, /\./],
+    [/\d--/, /-/],
+    [/^-$/, /-/],
+    [/[+/*√.^()]$/, /-/],
+  ];
+  const isRegValue =
+    (!/[+-/*√.^]$/.test(value) || /[\d()-]/.test(buttonValue)) &&
+    !(/\($/.test(value) && /[+/*√.^)]/.test(buttonValue)) &&
+    !(/\)$/.test(value) && /[(\d]/.test(buttonValue)) &&
+    !(/[√.^\d)]$/.test(value) && /[(]/.test(buttonValue));
+  if (
+    regReturnEmtyValueArr
+      .map((reg) =>
+        RegSetValueReturnEmptyButtonValue(reg[0], reg[1], value, buttonValue)
+      )
+      .includes("")
+  ) {
+    return "";
   }
-  if (!/[+-/*√.^]$/.test(value) || /[\d()]/.test(buttonValue)) {
-    if (!(/\($/.test(value) && /[+/*√.^)]/.test(buttonValue))) {
-      if (!(/\)$/.test(value) && /[(\d]/.test(buttonValue))) {
-        if (!(/[√.^\d)]$/.test(value) && /[(]/.test(buttonValue))) {
-          func(value + buttonValue);
-        }
-      }
-    }
+  if (isRegValue) {
+    return buttonValue;
   }
+  return "";
 };
 
-export const regEqualeValue = (
+const RegSetValueReturnEmptyButtonValue = (
+  regValue,
+  regButtonValue,
   value,
-  setValue,
-  answer,
-  setHistory,
-  history
+  buttonValue
 ) => {
+  if (regValue.test(value)) {
+    if (regButtonValue.test(buttonValue)) {
+      return "";
+    }
+  }
+  return buttonValue;
+};
+
+export const regEqualeValue = (value) => {
   try {
     let openBrackets = 0;
     let closeBrackets = 0;
@@ -29,16 +48,12 @@ export const regEqualeValue = (
       openBrackets = value.match(/\(/g).length;
       closeBrackets = value.match(/\)/g).length;
     }
-    if (openBrackets === closeBrackets) {
-      setValue(answer(value));
-      setHistory(
-        history.length > 10 ? [...history.slice(1), value] : [...history, value]
-      );
+    if (/[+\-/*√.^]$/.test(value)) {
+      return false;
+    } else if (openBrackets === closeBrackets) {
+      return true;
     }
   } catch (error) {
-    setValue("error");
-    setHistory(
-      history.length > 10 ? [...history.slice(1), value] : [...history, value]
-    );
+    return false;
   }
 };
