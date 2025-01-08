@@ -4,7 +4,7 @@ export const regSetValue = (value, buttonValue) => {
     [/\d+\.\d+$/, /\./],
     [/\d--/, /-/],
     [/^-$/, /-/],
-    [/[+/*√.^()]$/, /-/],
+    [/[+/*√.^()]-?$/, /-/],
   ];
   const isRegValue =
     (!/[+-/*√.^]$/.test(value) || /[\d()-]/.test(buttonValue)) &&
