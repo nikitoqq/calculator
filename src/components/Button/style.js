@@ -7,4 +7,11 @@ export const StyledButton = styled.button`
   border-radius: 22.5px;
   margin: 5px 5px;
   font-size: 18px;
+  &:hover {
+    background-color:rgb(210, 210, 210);
+  };
+  &:active {
+    background-color:rgb(190, 190, 190);
+    border: 0px;
+  }
 `;
